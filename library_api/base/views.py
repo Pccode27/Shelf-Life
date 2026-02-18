@@ -34,51 +34,34 @@ def updateBook(request, pk):
 
 
 
-@require_POST
-def add_books(request):
-    try:
-        data = json.loads(request.body.decode('utf-8'))
+@csrf_exempt
+def add_book(request):
 
-        # 🔥 If single book sent (your case)
-        if 'title' in data:
+    if request.method == "GET":
+        form = BookForm()
+        return render(request, 'base/book.html', {
+            'form': form,
+            'script_filepath': '/static/js/add_book.js',
+            'method_type': 'POST'
+        })
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+
             book = Book.objects.create(
                 title=data.get('title'),
                 author=data.get('author'),
                 genre=data.get('genre'),
-                publishing_year=data.get('publishing_year') or None,
-                pages=data.get('pages') or None,
-                chapters=data.get('chapters') or None,
+                publishing_year=int(data.get('publishing_year')) if data.get('publishing_year') else None,
+                pages=int(data.get('pages')) if data.get('pages') else None,
+                chapters=int(data.get('chapters')) if data.get('chapters') else None,
             )
+
             return JsonResponse({"message": "Book added"}, status=201)
 
-        # 🔥 If bulk books sent
-        books = data.get('books', [])
-        added = []
-        skipped = []
-
-        for b in books:
-            title = b.get('title')
-            if not title:
-                continue
-
-            if Book.objects.filter(title=title).exists():
-                skipped.append({"title": title, "reason": "already_exists"})
-                continue
-
-            book = Book.objects.create(
-                title=title,
-                author=b.get('author', ''),
-                genre=b.get('genre', ''),
-                publishing_year=b.get('publishing_year') or None,
-                pages=b.get('pages') or None,
-                chapters=b.get('chapters') or None,
-            )
-            added.append({"title": book.title})
-
-        return JsonResponse({"added": added, "skipped": skipped})
-
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
 @csrf_exempt
 @api_view(['DELETE'])
