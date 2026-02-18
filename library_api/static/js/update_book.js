@@ -18,11 +18,12 @@ form.addEventListener("submit", (e) => {
         return;
     }
 
-    const url = "http://127.0.0.1:8000/api/books" + window.location.pathname;
+    const url =  window.location.pathname;
     fetch(url, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": csrf_token
         },
         body: JSON.stringify({
             title: title.value,
@@ -45,7 +46,7 @@ form.addEventListener("submit", (e) => {
             console.log("Success:", data);
             formWrapper.innerHTML = `<h3>Book updated successfully!</h3>`;
             setTimeout(() => {
-                window.location.href = "http://127.0.0.1:8000/";
+                window.location.href = "/";
             }, 1000);
         }
     );
