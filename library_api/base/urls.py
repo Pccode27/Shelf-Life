@@ -6,7 +6,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     # path('add/', views.addBook, name='add'),
     path('library/add/', views.add_book, name='add-book'),
-    path('update/<str:pk>/', views.updateBook, name='update'),
+    path('update/<int:pk>/', views.updateBook, name='update'),
     path("api/books/delete/<int:pk>/", views.delete_book, name="delete_book"),
 
 ]
