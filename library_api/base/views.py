@@ -36,7 +36,6 @@ def updateBook(request, pk):
 
 @csrf_exempt
 def add_book(request):
-
     if request.method == "GET":
         form = BookForm()
         return render(request, 'base/book.html', {
