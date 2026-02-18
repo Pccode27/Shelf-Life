@@ -30,7 +30,8 @@
                 </a>    
             <div class="card-buttons">
                 <button class="edit-button" id="edit-button-{{ book.id }}" onclick="location.href=`{% url 'update' book.id %}`">Edit</button>
-                <button class="delete-button" id="delete-button-{{ book.id }}">Delete</button>
+                <button class="delete-button" id="delete-button-{{ book.id }}"
+               data-url="/api/books/delete/{{ book.id }}/">Delete</button>
             </div>
         </div>
         {% empty %}

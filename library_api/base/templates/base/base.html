@@ -7,6 +7,158 @@
     <title>ShelfLife</title>
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'styles/base.css' %}" type="text/css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url("{% static 'images/library-bg.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #f39c12;
+        }
+        nav ul {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        nav ul li a::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f39c12;
+            transition: 0.3s;
+        }
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            text-align: center;
+            padding: 120px 20px 80px;
+            color: #fff;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+        }
+        .hero-banner h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #f39c12;
+        }
+        .hero-banner p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .hero-banner button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: #f39c12;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .hero-banner button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Cards Styling (books section) */
+        .book-card {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .book-card h4 {
+            color: #2c3e50;
+        }
+        .book-card button {
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        .book-card .btn-success:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+        .book-card .btn-danger:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        footer a {
+            color: #f39c12;
+            text-decoration: none;
+        }
+
+        /* Scroll-to-top button */
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 5px;
+            right:  5px;
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 1px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: 0.3s ease-in-out;
+            z-index: 2000;
+        }
+        #scrollTopBtn:hover {
+            background: #e67e22;
+            transform: translateY(-3px)
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -20,8 +172,46 @@
             <li><a href="{% url 'add' %}">Add</a></li>
         </ul>
     </nav>
+
+    <!-- Extra Hero Section -->
+    <div class="hero-banner">
+        <h1>Welcome to ShelfLife</h1>
+        <p>Discover, Add, and Manage your favorite books in one place 📚</p>
+        <button onclick="scrollToBooks()">Explore Books</button>
+    </div>
+
     {% block content %}
     {% endblock %}
+
+    <!-- Scroll to top button -->
+    <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+
+    <footer>
+        <p>&copy; 2025 ShelfLife | Made with ❤️ using Django | <a href="{% url 'home' %}">Back to Home</a></p>
+    </footer>
+
+    <!-- JS Features -->
+    <script>
+        // Smooth scroll to books
+        function scrollToBooks() {
+            document.querySelector(".book-card")?.scrollIntoView({ behavior: "smooth" });
+        }
+
+        // Scroll-to-top button
+        const scrollBtn = document.getElementById("scrollTopBtn");
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollBtn.style.display = "block";
+            } else {
+                scrollBtn.style.display = "none";
+            }
+        };
+        function scrollToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+
+    <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
