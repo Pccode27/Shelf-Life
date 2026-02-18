@@ -26,7 +26,10 @@ SECRET_KEY = "django-insecure-cf9j1fs+4r!341b69bp_2ib13cv4c0#%z6%8#lxk8@6tjb^^@f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.onrender.com']
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    "https://shelf-life-cuni.onrender.com"
+]
 
 
 # Application definition
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'base.apps.BaseConfig',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
