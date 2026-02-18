@@ -36,39 +36,49 @@ def updateBook(request, pk):
 
 @require_POST
 def add_books(request):
-    """
-    Expects JSON body: { "books": [ {book1}, {book2}, ... ] }
-    Returns: { "added": [...], "skipped": [...] }
-    """
     try:
-        payload = json.loads(request.body.decode('utf-8'))
-        books = payload.get('books', [])
-    except Exception:
-        return JsonResponse({"error": "Invalid JSON"}, status=400)
+        data = json.loads(request.body.decode('utf-8'))
 
-    added = []
-    skipped = []
+        # 🔥 If single book sent (your case)
+        if 'title' in data:
+            book = Book.objects.create(
+                title=data.get('title'),
+                author=data.get('author'),
+                genre=data.get('genre'),
+                publishing_year=data.get('publishing_year') or None,
+                pages=data.get('pages') or None,
+                chapters=data.get('chapters') or None,
+            )
+            return JsonResponse({"message": "Book added"}, status=201)
 
-    for b in books:
-        title = b.get('title')
-        if not title:
-            continue
-        # Prevent duplicates by title; change this if you want a different dedupe rule
-        if Book.objects.filter(title=title).exists():
-            skipped.append({"title": title, "reason": "already_exists"})
-            continue
+        # 🔥 If bulk books sent
+        books = data.get('books', [])
+        added = []
+        skipped = []
 
-        book = Book.objects.create(
-            title=title,
-            author=b.get('author', ''),
-            genre=b.get('genre', ''),
-            publishing_year=b.get('publishing_year') or None,
-            pages=b.get('pages') or None,
-            chapters=b.get('chapters') or None,
-        )
-        added.append({"title": book.title, "id": book.id})
+        for b in books:
+            title = b.get('title')
+            if not title:
+                continue
 
-    return JsonResponse({"added": added, "skipped": skipped})
+            if Book.objects.filter(title=title).exists():
+                skipped.append({"title": title, "reason": "already_exists"})
+                continue
+
+            book = Book.objects.create(
+                title=title,
+                author=b.get('author', ''),
+                genre=b.get('genre', ''),
+                publishing_year=b.get('publishing_year') or None,
+                pages=b.get('pages') or None,
+                chapters=b.get('chapters') or None,
+            )
+            added.append({"title": book.title})
+
+        return JsonResponse({"added": added, "skipped": skipped})
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 @csrf_exempt
 @api_view(['DELETE'])

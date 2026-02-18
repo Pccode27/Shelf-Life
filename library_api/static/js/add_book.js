@@ -26,7 +26,7 @@ form.addEventListener("submit", async (e) => {
     formWrapper.appendChild(loadingMsg);
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/books/add/", {
+        const response = await fetch("/library/add/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
